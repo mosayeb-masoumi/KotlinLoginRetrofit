@@ -1,11 +1,14 @@
 package com.example.kotlinlogin.activities
 
+
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.kotlinlogin.R
 import com.example.kotlinlogin.api.RetrofitClient
 import com.example.kotlinlogin.models.DefaultResponse
+import com.example.kotlinlogin.storage.SharedPrefManager
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,6 +19,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        textViewLogin.setOnClickListener {
+
+            startActivity(Intent(this@MainActivity,LoginActivity::class.java))
+
+    }
+
+
 
         buttonSignUp.setOnClickListener{
 
@@ -63,8 +74,21 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     })
-            
+
         }
 
+    }
+
+
+
+
+    // if we logged in before then goto profile actiity or else
+    override fun onStart() {
+        super.onStart()
+        if(SharedPrefManager.getInstance(this).isLoggedIn){
+            val intent = Intent(applicationContext,ProfileActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 }
